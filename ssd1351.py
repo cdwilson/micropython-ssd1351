@@ -96,7 +96,7 @@ class Display(object):
         self.write_cmd(self.DISPLAY_ENHANCEMENT, 0xA4, 0x00, 0x00)
         self.write_cmd(self.CLOCK_DIV, 0xF0)  # Clock divider F1 or F0
         self.write_cmd(self.MUX_RATIO, 0x7F)  # Mux ratio
-        self.write_cmd(self.SET_REMAP, 0x74)  # Segment remapping
+        self.write_cmd(self.SET_REMAP, 0x72)  # Segment remapping
         self.write_cmd(self.START_LINE, 0x00)  # Set Display start line
         self.write_cmd(self.DISPLAY_OFFSET, 0x00)  # Set display offset
         self.write_cmd(self.SET_GPIO, 0x00)  # Set GPIO
@@ -136,7 +136,6 @@ class Display(object):
         self.clear()
         self.display_off()
         self.spi.deinit()
-        print('display off')
 
     def clear(self, color=0):
         """Clear display.
@@ -342,11 +341,11 @@ class Display(object):
         else:
             if self.is_off_grid(x, y, x + w - 1, y + h - 1):
                 return
-            self.write_cmd(self.SET_REMAP, 0x75)  # Vertical address increment
+            self.write_cmd(self.SET_REMAP, 0x73)  # Vertical address increment
             self.block(x, y,
                        x + w - 1, y + h - 1,
                        buf)
-            self.write_cmd(self.SET_REMAP, 0x74)  # Switch back to horizontal
+            self.write_cmd(self.SET_REMAP, 0x72)  # Switch back to horizontal
         return w, h
 
     def draw_line(self, x1, y1, x2, y2, color):
