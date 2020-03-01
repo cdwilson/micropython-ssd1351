@@ -54,7 +54,7 @@ class Display(object):
     STOP_SCROLL = const(0x9E)
     START_SCROLL = const(0x9F)
 
-    def __init__(self, spi, cs, dc, rst, width=128, height=128):
+    def __init__(self, spi, cs, dc, rst, width=128, height=128, x_offset=0, y_offset=0):
         """Initialize OLED.
 
         Args:
@@ -71,6 +71,8 @@ class Display(object):
         self.rst = rst
         self.width = width
         self.height = height
+        self.x_offset = x_offset
+        self.y_offset = y_offset
         # Initialize GPIO pins and set implementation specific methods
         if implementation.name == 'circuitpython':
             self.cs.switch_to_output(value=True)
@@ -120,6 +122,10 @@ class Display(object):
             y1 (int):  Ending Y position.
             data (bytes): Data buffer to write.
         """
+        x0 = x0 + self.x_offset
+        x1 = x1 + self.x_offset
+        y0 = y0 + self.y_offset
+        y1 = y1 + self.y_offset
         self.write_cmd(self.SET_COLUMN, x0, x1)
         self.write_cmd(self.SET_ROW, y0, y1)
         self.write_cmd(self.WRITE_RAM)
@@ -789,11 +795,11 @@ class Display(object):
         if ymin < 0:
             print('y-coordinate: {0} below minimum of 0.'.format(ymin))
             return True
-        if xmax >= self.width:
+        if xmax >= self.width + self.x_offset:
             print('x-coordinate: {0} above maximum of {1}.'.format(
                 xmax, self.width - 1))
             return True
-        if ymax >= self.height:
+        if ymax >= self.height + self.y_offset:
             print('y-coordinate: {0} above maximum of {1}.'.format(
                 ymax, self.height - 1))
             return True
